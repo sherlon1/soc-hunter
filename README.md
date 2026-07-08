@@ -244,13 +244,13 @@ Adapted from the [Agentic Threat Hunting Framework](https://github.com/Nebulock-
 
 ## How It Works with Other Skills
 
-| When... | Use... | Source |
-|---------|--------|--------|
-| Hunt finds IOCs to analyze | `/ioc-analyst` | internal skill |
-| Hunt confirms IOCs to block | `/ioc-uploader` | internal skill |
-| Hunt is complete and needs a ticket | `/ticketing-skill` | your org's ticketing skill |
-| Hunt finding escalates to active incident | `/ir-triage` | internal skill |
-| Hunt involves supply chain TTPs | `/supply-chain-skill` | internal skill |
+| When... | Use... |
+|---------|--------|
+| Hunt finds IOCs to analyze | `/ioc-analyst` |
+| Hunt confirms IOCs to block | `/ioc-uploader` |
+| Hunt is complete and needs a ticket | `/ticketing-skill` |
+| Hunt finding escalates to active incident | `/ir-triage` |
+| Hunt involves supply chain TTPs | `/supply-chain-skill` |
 
 The agent will suggest these integrations at the appropriate time but never invokes them without your approval.
 
