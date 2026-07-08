@@ -1,0 +1,155 @@
+{
+  "_meta": {
+    "description": "SIEM field names per index for SOC-Hunter. Use as reference to construct correct queries on first attempt. Populate this file with fields from your actual environment using your SIEM's fieldsummary / field discovery tools.",
+    "how_to_populate": "Run `| fieldsummary` (Splunk), `_source` inspection (Elastic), or equivalent against each index and record the key fields here.",
+    "purpose": "Eliminate field-discovery retries. The agent queries any SPL/KQL it needs — this only tells it WHAT FIELDS EXIST in each index."
+  },
+
+  "<vm_inventory_index>": {
+    "notes": "CRITICAL: Check your SIEM forwarder field names. The 'host' field is often the forwarder, NOT the scanned asset. Use your VM platform's asset hostname field for endpoint identity.",
+    "suggested_fields": {
+      "identity": {
+        "asset_hostname": "Scanned endpoint hostname (primary identifier — verify field name in your environment)",
+        "asset_fqdn": "Scanned endpoint FQDN",
+        "asset_uuid": "VM platform asset UUID",
+        "dest_ip": "Asset IP address"
+      },
+      "finding": {
+        "plugin_id": "Scan plugin / check ID",
+        "plugin_name": "Plugin display name",
+        "plugin_family": "Plugin family",
+        "risk_factor": "None/Low/Medium/High/Critical",
+        "output": "Full plugin output text (may be multiline)",
+        "cve": "CVE ID(s)"
+      },
+      "scoring": {
+        "cvss3_base_score": "CVSS v3 base score",
+        "vpr_score": "Vendor proprietary risk score (if available)",
+        "epss_score": "EPSS exploit probability (if available)"
+      }
+    }
+  },
+
+  "<auth_index>": {
+    "notes": "Identity provider / SSO logs. Field names vary significantly by provider (Okta vs Azure AD vs Google Workspace vs Auth0).",
+    "suggested_fields": {
+      "identity": {
+        "user": "Actor / user principal name",
+        "src_ip": "Source IP address",
+        "target_user": "Target / affected user"
+      },
+      "event": {
+        "action": "Event action (login, logout, MFA, policy change, etc.)",
+        "outcome": "success / failure",
+        "reason": "Failure reason or event detail"
+      }
+    }
+  },
+
+  "<endpoint_os_index>": {
+    "notes": "Windows Event Logs / Linux auditd from servers and DCs. Field names vary by forwarder (WinEventLog add-on, Splunk UF, Elastic agent, etc.).",
+    "suggested_fields": {
+      "windows_auth": {
+        "EventCode": "Windows Event ID (4624, 4625, 4768, 4776, etc.)",
+        "Account_Name": "Subject account name",
+        "Logon_Type": "Logon type (2=interactive, 3=network, 10=remote)",
+        "src_ip": "Source IP for network logons",
+        "Process_Name": "Process name for 4688"
+      },
+      "kerberos": {
+        "EventCode": "4768 (TGT request), 4769 (service ticket), 4771 (pre-auth failure)",
+        "Ticket_Encryption_Type": "0x17 = RC4, 0x12 = AES256",
+        "Service_Name": "Target service (for Kerberoasting detection)"
+      }
+    }
+  },
+
+  "<edr_index>": {
+    "notes": "EDR alert / detection events forwarded to SIEM. Field names vary by EDR platform.",
+    "suggested_fields": {
+      "process": {
+        "process_name": "Process executable name",
+        "cmd_line": "Full command line",
+        "parent_process": "Parent process name",
+        "sha256": "Process file hash"
+      },
+      "network": {
+        "dst_ip": "Destination IP",
+        "dst_port": "Destination port",
+        "dst_domain": "Destination domain"
+      }
+    }
+  },
+
+  "<scm_audit_index>": {
+    "notes": "SCM audit logs (GitHub Enterprise Cloud, GitLab, Bitbucket, etc.). Field names vary by platform and forwarder.",
+    "suggested_fields": {
+      "github": {
+        "actor": "GitHub username performing action",
+        "action": "GitHub audit action (repo.create, team.add_member, etc.)",
+        "repo": "Repository name",
+        "org": "Organization name",
+        "created_at": "Event timestamp"
+      }
+    }
+  },
+
+  "<artifact_registry_index>": {
+    "notes": "Artifact registry logs (JFrog Artifactory, Nexus, etc.). Field names vary by forwarder.",
+    "suggested_fields": {
+      "download": {
+        "user": "Authenticated user who downloaded artifact",
+        "repo": "Repository name",
+        "artifact_path": "Full artifact path",
+        "ip": "Client IP address",
+        "timestamp": "Download timestamp"
+      }
+    }
+  },
+
+  "<cloud_audit_index>": {
+    "notes": "Cloud API audit logs (AWS CloudTrail, Azure Activity, GCP Audit, etc.). Field names vary by provider and forwarder.",
+    "suggested_fields": {
+      "aws_cloudtrail": {
+        "eventSource": "AWS service (iam.amazonaws.com, s3.amazonaws.com, etc.)",
+        "eventName": "API action name (CreateUser, PutObject, etc.)",
+        "userIdentity.arn": "Caller identity ARN",
+        "sourceIPAddress": "Caller IP",
+        "requestParameters": "Request payload (JSON)"
+      },
+      "azure_activity": {
+        "OperationName": "Azure operation name",
+        "Caller": "Caller identity",
+        "CallerIpAddress": "Caller IP",
+        "ResourceId": "Affected resource"
+      }
+    }
+  },
+
+  "<dns_index>": {
+    "notes": "DNS query logs. Field names vary by DNS platform (Umbrella, Infoblox, Windows DNS, PowerDNS, etc.).",
+    "suggested_fields": {
+      "query": {
+        "src_ip": "Client IP making the query",
+        "query": "DNS query name (FQDN)",
+        "answer": "DNS response (IP or NXDOMAIN)",
+        "record_type": "Query type (A, AAAA, MX, TXT, etc.)",
+        "rcode": "Response code (0=NOERROR, 3=NXDOMAIN)"
+      }
+    }
+  },
+
+  "<casb_index>": {
+    "notes": "CASB/SSE events (Netskope, Zscaler, Menlo, etc.). Field names vary by platform.",
+    "suggested_fields": {
+      "application_event": {
+        "user": "User email or identity",
+        "app": "Application name",
+        "activity": "Activity type (upload, download, post, share, etc.)",
+        "category": "App category (Generative AI, Cloud Storage, etc.)",
+        "bytes": "Data volume",
+        "dst_domain": "Destination domain"
+      }
+    }
+  }
+}

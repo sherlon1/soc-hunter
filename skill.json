@@ -1,0 +1,45 @@
+{
+  "name": "soc-hunter",
+  "version": "2.0.0",
+  "description": "Proactive threat hunting using the LOCK pattern (Learn-Observe-Check-Keep) across your security data sources — SIEM, EDR, CSPM, CASB, LDAP/AD, Log Analytics, and Code Search",
+  "author": "Your Name <you@example.com>",
+  "_author_note": "Replace with your name/email before publishing",
+  "license": "MIT",
+  "requires": {
+    "mcp_servers": ["siem-mcp", "edr-mcp", "cspm-mcp", "casb-mcp", "log-analytics-mcp", "code-search-mcp"],
+    "tools": ["ldap3 (python)", "pass (password-store) or equivalent secret manager"],
+    "claude_code_version": ">=1.0.0"
+  },
+  "commands": {
+    "primary": "/soc-hunter",
+    "aliases": ["/hunt", "/threat-hunt"]
+  },
+  "usage": "/soc-hunter <mode> <args>",
+  "examples": [
+    "/soc-hunter hunt T1078.002 -- Valid accounts: domain accounts",
+    "/soc-hunter hunt Qakbot DLL sideloading campaign",
+    "/soc-hunter research Kerberoasting in hybrid Azure AD",
+    "/soc-hunter execute H-0003",
+    "/soc-hunter review",
+    "/soc-hunter baseline service accounts -- auth patterns last 30 days",
+    "/soc-hunter investigate weird DNS queries from ACME-PC01",
+    "/soc-hunter lookup T1003.001"
+  ],
+  "modes": {
+    "hunt": "Full LOCK cycle -- hypothesis through detection",
+    "research": "LEARN phase only -- gather CTI, form hypothesis, scope",
+    "execute": "CHECK phase only -- run queries from existing hunt file",
+    "review": "Coverage gap analysis -- ATT&CK coverage and prioritization",
+    "baseline": "Deviation detection -- profile normal behavior, flag anomalies",
+    "investigate": "TRACE framework -- lightweight structured investigations",
+    "lookup": "ATT&CK quick reference -- technique details from STIX bundle"
+  },
+  "tags": ["security", "threat-hunting", "incident-response", "mitre-attack", "lock-pattern", "secops"],
+  "integrates_with": [
+    "ioc-analysis-skill",
+    "ioc-upload-skill",
+    "ticketing-skill",
+    "ir-triage-skill",
+    "supply-chain-skill"
+  ]
+}
