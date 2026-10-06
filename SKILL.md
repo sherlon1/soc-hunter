@@ -24,23 +24,24 @@ Every hunt follows four phases with **approval gates** between them.
 ### LEARN: Prepare the Hunt
 
 1. **Parse the input** — Identify the TTP, threat intel, or anomaly the analyst wants to hunt
-2. **Check past hunts** — Search for related work using semantic similarity:
-   - `python3 scripts/hunt-similar.py "<hunt topic or technique>"` for semantic matches across all hunt files
-   - If results score >= 0.50: **likely duplicate** — present to analyst, ask whether to proceed or reuse
-   - If results score 0.30-0.49: **related** — reference their lessons learned and false positive filters
-   - Fallback: `grep -ril "<keyword>" hunts/` for exact string matches if hunt-similar.py is unavailable
-3. **Check known FP patterns** — Consult `memory/false-positives.md` for patterns relevant to this hunt's data sources. Note which FPs may apply so you can flag them during CHECK phase. **Do NOT pre-filter queries to exclude FPs** — let the analyst decide during analysis.
-4. **Map to MITRE ATT&CK** — Run `python3 scripts/attack-lookup.py <technique>` to get authoritative platforms, detection telemetry, and sub-techniques. The detection telemetry is **reference context** — it shows which MITRE data components apply, but it is not an exhaustive list of what to query. Always combine with proven queries from memory.
-5. **Form a hypothesis** — One testable sentence:
+2. **Form a hypothesis** — One testable sentence:
    > "Adversaries use [behavior] to [goal] on [target system]"
-6. **ABLE scoping** — Define:
+3. **ABLE scoping** — Define:
    - **Actor** (optional): Threat actor or malware family
    - **Behavior**: TTP or behavior pattern (top of Pyramid of Pain — behaviors, not indicators)
    - **Location**: Systems, networks, cloud accounts to hunt
    - **Evidence**: Data sources, SIEM indexes, EDR event types, key fields
-7. **Identify data sources** — Start with what has worked: consult `memory/hunt-queries.md` for proven queries, `memory/siem-indexes.md` for index names, and lessons learned from prior hunts.
+4. **Identify data sources** — Start with what has worked: consult `memory/hunt-queries.md` for proven queries, `memory/siem-indexes.md` for index names, and lessons learned from prior hunts.
 
 **Present the hypothesis and ABLE scoping table to the analyst. STOP and wait for approval before proceeding.**
+
+5. **Check past hunts** — After analyst approves the hypothesis, search for related work. Show the exact command to the analyst and wait for approval before running it:
+   - `python3 scripts/hunt-similar.py -- "<hunt topic or technique>"` for semantic matches across all hunt files
+   - If results score >= 0.50: **likely duplicate** — present to analyst, ask whether to proceed or reuse
+   - If results score 0.30-0.49: **related** — reference their lessons learned and false positive filters
+   - Fallback: `grep -ril -F -- "<keyword>" hunts/` for fixed-string matches if hunt-similar.py is unavailable
+6. **Check known FP patterns** — Consult `memory/false-positives.md` for patterns relevant to this hunt's data sources. Note which FPs may apply so you can flag them during CHECK phase. **Do NOT pre-filter queries to exclude FPs** — let the analyst decide during analysis.
+7. **Map to MITRE ATT&CK** — Run `python3 scripts/attack-lookup.py <technique>` to get authoritative platforms, detection telemetry, and sub-techniques. The detection telemetry is **reference context** — it shows which MITRE data components apply, but it is not an exhaustive list of what to query. Always combine with proven queries from memory.
 
 ### OBSERVE: Define Expected Behaviors
 
