@@ -36,10 +36,10 @@ Every hunt follows four phases with **approval gates** between them.
 **Present the hypothesis and ABLE scoping table to the analyst. STOP and wait for approval before proceeding.**
 
 5. **Check past hunts** — After analyst approves the hypothesis, search for related work. Show the exact command to the analyst and wait for approval before running it:
-   - `python3 scripts/hunt-similar.py -- "<hunt topic or technique>"` for semantic matches across all hunt files
+   - `python3 scripts/hunt-similar.py -- TOPIC` where `TOPIC` is the hunt topic passed as a single unquoted positional argument (never interpolated inside shell quotes)
    - If results score >= 0.50: **likely duplicate** — present to analyst, ask whether to proceed or reuse
    - If results score 0.30-0.49: **related** — reference their lessons learned and false positive filters
-   - Fallback: `grep -ril -F -- "<keyword>" hunts/` for fixed-string matches if hunt-similar.py is unavailable
+   - Fallback: `grep -ril -F -- KEYWORD hunts/` where `KEYWORD` is the search term passed as a plain positional argument, not embedded in shell quotes
 6. **Check known FP patterns** — Consult `memory/false-positives.md` for patterns relevant to this hunt's data sources. Note which FPs may apply so you can flag them during CHECK phase. **Do NOT pre-filter queries to exclude FPs** — let the analyst decide during analysis.
 7. **Map to MITRE ATT&CK** — Run `python3 scripts/attack-lookup.py <technique>` to get authoritative platforms, detection telemetry, and sub-techniques. The detection telemetry is **reference context** — it shows which MITRE data components apply, but it is not an exhaustive list of what to query. Always combine with proven queries from memory.
 
