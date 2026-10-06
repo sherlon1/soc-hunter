@@ -863,7 +863,7 @@ python3 scripts/ir/ioc-enrich.py --batch <file>
 
 ### Creating Hunt Files
 
-1. **Check for duplicates**: `python3 scripts/hunt-similar.py "<hunt topic>"` — if score >= 0.50, review existing hunt first
+1. **Check for duplicates**: `python3 scripts/hunt-similar.py -- TOPIC` where `TOPIC` is the hunt topic as a plain positional argument — if score >= 0.50, review existing hunt first
 2. Determine next hunt ID: `ls hunts/H-*.md 2>/dev/null | sort -V | tail -1`
 3. Copy template: use `skills/soc-hunter/templates/HUNT_LOCK.md` as the base
 4. Fill in all sections as the hunt progresses
@@ -908,17 +908,17 @@ tags: []
 Finds hunts semantically related to a query using TF-IDF + cosine similarity.
 
 ```bash
-# Search by topic
-python3 scripts/hunt-similar.py "supply chain npm"
+# Search by topic — pass topic as a plain positional argument, never shell-quoted
+python3 scripts/hunt-similar.py -- "supply chain npm"
 
 # Find hunts similar to an existing hunt
 python3 scripts/hunt-similar.py --hunt H-0015
 
 # Adjust sensitivity
-python3 scripts/hunt-similar.py "credential dumping" --threshold 0.3
+python3 scripts/hunt-similar.py --threshold 0.3 -- "credential dumping"
 
 # JSON output
-python3 scripts/hunt-similar.py "OAuth token abuse" --json
+python3 scripts/hunt-similar.py --json -- "OAuth token abuse"
 ```
 
 **Score interpretation:**
